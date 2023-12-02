@@ -24,7 +24,6 @@ public class UserController {
                User user_saved =  userService.saveUser(user);
                 return new ResponseEntity<User>(user_saved, HttpStatus.CREATED);
         }
-
         @GetMapping()
         public ResponseEntity<List<User>> getAllUsers() {
             List<User>userList =  userService.getAllUsers();
