@@ -1,6 +1,7 @@
 package com.dpkProjects.user.service.services.impl;
 
 import com.dpkProjects.user.service.exceptions.ResourceNotFoundException;
+import com.dpkProjects.user.service.externalServices.HotelService;
 import com.dpkProjects.user.service.models.Hotel;
 import com.dpkProjects.user.service.models.Rating;
 import com.dpkProjects.user.service.models.User;
@@ -24,6 +25,8 @@ public class userServiceImpl implements UserService {
     @Autowired
     UserRepo userRepo;
 
+    @Autowired
+    HotelService hotelService;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -53,10 +56,17 @@ public class userServiceImpl implements UserService {
     }
 
     private void getHotelsByRatings(List<Rating> ratings) {
-       ratings.stream().map(rating -> {
-         ResponseEntity<Hotel> hotel = restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
-         rating.setHotel(hotel.getBody());
-         return rating;
+        ratings.stream().map(rating -> {
+            /**
+             * the below impl is of restTemplate
+             */
+            //ResponseEntity<Hotel> hotel = restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+            /**
+             * implementing fien client
+             */
+            Hotel hotel = hotelService.getHotelById(rating.getHotelId());
+            rating.setHotel(hotel);
+            return rating;
         }).collect(Collectors.toList());
     }
 }
